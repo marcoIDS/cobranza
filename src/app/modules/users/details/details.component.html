@@ -1,0 +1,150 @@
+<div class="mb-5"></div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <button mat-button class="d-flex align-items-center" (click)="return()">
+                <mat-icon>arrow_back</mat-icon>
+                <span>Regresar</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <h2>Detalles del cliente {{infoClient?.name}}</h2>
+        </div>
+    </div>
+    <form [formGroup]="formUser">
+        <div class="row">
+            <div class="col-6">
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Nombre</mat-label>
+                    <input type="text" matInput formControlName="name"
+                            placeholder="Nombre del cliente">
+                    <mat-error *ngIf="formUser.get('name')?.hasError('required')">
+                        Campo requerido
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Teléfono</mat-label>
+                    <input type="number" matInput formControlName="phone"
+                            placeholder="Teléfono del cliente">
+                    <mat-error *ngIf="formUser.get('phone')?.hasError('required')">
+                        Campo requerido
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>Dirección</mat-label>
+                    <input type="text" matInput formControlName="address"
+                            placeholder="Dirección del cliente">
+                    <mat-error *ngIf="formUser.get('address')?.hasError('required')">
+                        Campo requerido
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <button class="btn btn-primary" (click)="saveUser()" [disabled]="formUser.invalid">Guardar cambios</button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-12">
+            <h3>Prestamos</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="dataSource">
+              
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="monto_total">
+                    <th mat-header-cell *matHeaderCellDef> Monto total </th>
+                    <td mat-cell *matCellDef="let element"> {{element?.monto_total | currency}} </td>
+                  </ng-container>
+              
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="pago_semanal">
+                    <th mat-header-cell *matHeaderCellDef> Pago semanal </th>
+                    <td mat-cell *matCellDef="let element"> {{element?.pago_semanal | currency}} </td>
+                  </ng-container>
+              
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="monto_abonado">
+                    <th mat-header-cell *matHeaderCellDef> Monto abonado </th>
+                    <td mat-cell *matCellDef="let element">{{element?.cantidad_abonada | currency}} </td>
+                  </ng-container>
+
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="fecha_desembolso">
+                    <th mat-header-cell *matHeaderCellDef> Fecha de desembolso </th>
+                    <td mat-cell *matCellDef="let element"> {{element?.fecha_desembolso | date}} </td>
+                  </ng-container>
+
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="actualPrestamo = element">
+                                <mat-icon>price_check</mat-icon>
+                                <span>Ver abonos</span>
+                            </button>
+                            <button mat-menu-item (click)="addAbono(element)">
+                                <mat-icon>payments</mat-icon>
+                                <span>Nuevo abono</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                  </ng-container>
+              
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                               showFirstLastButtons 
+                               aria-label="Select page of periodic elements">
+                </mat-paginator>
+              </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-end">
+            <button class="btn btn-primary d-flex align-items-center" (click)="addPrestamo()"><mat-icon>add</mat-icon> Agregar prestamo</button>
+        </div>
+    </div>
+    <div class="row" *ngIf="actualPrestamo">
+        <div class="col-12">
+            <h2>Abonos del prestamo del {{actualPrestamo.fecha_desembolso | date}}</h2>
+        </div>
+        <div class="col-12">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            Cantidad abonada
+                        </th>
+                        <th>
+                            Fecha de abono
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let abono of actualPrestamo.abonos">
+                        <td>{{abono.cantidad_abonada | currency}}</td>
+                        <td>{{abono.fecha_abono | date}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
